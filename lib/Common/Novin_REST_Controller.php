@@ -111,6 +111,27 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 			)
 		);
 
+		//get customer id by digitNumber
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/customer-by-digitNumber',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'getDigitNumber' ),
+					'permission_callback' => array( $this, 'checkPermission' ),
+					'args'                => [
+						'guid' => array(
+							'description'       => __( 'Get customer id with this digitNumber.' ),
+							'type'              => 'string',
+							'validate_callback' => 'rest_validate_request_arg',
+							'required'          => true
+						)
+					],
+				),
+			)
+		);
+
 		//get customer id by username
 		register_rest_route(
 			$this->namespace,
@@ -409,6 +430,20 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 						LIMIT %d
 						OFFSET %d
     					", $limit, $offset ) );
+		} else if( $request->get_param( 'digits_phone_no' )){
+			$query = "
+						FROM $wpdb->usermeta
+						WHERE meta_key = 'digits_phone_no'
+						ORDER BY umeta_id";
+			$data  = $wpdb->get_results( $wpdb->prepare(
+				"
+						SELECT user_id as id, meta_value as digits_phone_no
+						" .
+				$query .
+				"
+						LIMIT %d
+						OFFSET %d
+						", $limit, $offset ) );
 		} else {
 			$query = "
 						FROM $wpdb->users
