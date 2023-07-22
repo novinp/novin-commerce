@@ -121,7 +121,7 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 					'callback'            => array( $this, 'getDigitNumber' ),
 					'permission_callback' => array( $this, 'checkPermission' ),
 					'args'                => [
-						'guid' => array(
+						'digits_phone_no' => array(
 							'description'       => __( 'Get customer id with this digitNumber.' ),
 							'type'              => 'string',
 							'validate_callback' => 'rest_validate_request_arg',
@@ -527,8 +527,42 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
+	public function getMetaPhoneNumber( $request, $table ) {
+		global $wpdb;
+
+		$digits_phone_no = $request->get_param( 'digits_phone_no' );
+
+		$id = $wpdb->get_col( $wpdb->prepare( "
+		SELECT user_id
+		FROM {$wpdb->$table}
+		WHERE meta_key = 'digits_phone_no' AND meta_value = %s
+		", $digits_phone_no) );
+
+		if ( empty( $id ) ) {
+			return new \WP_Error( "{$type}_or_guid_not_found", __( ucwords( $type ) . ' or GUID not found.', 'novin-commerce' ), array( 'status' => 404 ) );
+		}
+
+		return new \WP_REST_Response( $id );
+
+	}
+
+	/**
+	 * @param $request \WP_REST_Request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
 	public function getCustomerGuid( $request ) {
 		return $this->getMetaGuid( $request, 'usermeta' );
+	}
+
+
+	/**
+	 * @param $request \WP_REST_Request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function getDigitNumber( $request ) {
+		return $this->getMetaPhoneNumber( $request, 'usermeta' );
 	}
 
 
