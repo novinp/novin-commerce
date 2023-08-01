@@ -539,7 +539,7 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 		", $digits_phone_no) );
 
 		if ( empty( $id ) ) {
-			return new \WP_Error( "{$type}_or_guid_not_found", __( ucwords( $type ) . ' or GUID not found.', 'novin-commerce' ), array( 'status' => 404 ) );
+			return new \WP_Error( "{$digits_phone_no}_not_found", __( ucwords( $digits_phone_no ) . ' not found.', 'novin-commerce' ), array( 'status' => 404 ) );
 		}
 
 		return new \WP_REST_Response( $id );
