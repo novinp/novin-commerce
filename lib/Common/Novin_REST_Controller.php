@@ -112,6 +112,7 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 		);
 
 		//get customer id by digitNumber
+		// call methode getDigitNumber and pass digits_phone_no as arg
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/customer-by-digitNumber',
