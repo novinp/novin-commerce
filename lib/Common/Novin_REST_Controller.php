@@ -514,6 +514,12 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
+
+	 // در این متد دو مقدار نام جدول متا که
+	 //usermeta
+	 // هست و پارامتر ارسالی از سمت
+	 // url
+	 // دریافت شده و سپس کویری لازم برای دریافت آیدی از متا  نوشته میشود
 	public function getMetaPhoneNumber( $request, $table ) {
 		global $wpdb;
 
@@ -526,7 +532,7 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 		", $digits_phone_no) );
 
 		if ( empty( $id ) ) {
-			return new \WP_Error( "{$digits_phone_no}_not_found", __( ucwords( $digits_phone_no ) . ' not found.', 'novin-commerce' ), array( 'status' => 404 ) );
+			return new \WP_Error( "digits_phone_no_not_found", 'digits_phone_no_not_found', 'novin-commerce' ), array( 'status' => 404 ) );
 		}
 
 		return new \WP_REST_Response( $id );
@@ -548,6 +554,8 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
+
+	 //این متد از طریق /customer-by-digitNumber صدا زده میشود 
 	public function getDigitNumber( $request ) {
 		return $this->getMetaPhoneNumber( $request, 'usermeta' );
 	}
