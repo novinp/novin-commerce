@@ -430,20 +430,6 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 						LIMIT %d
 						OFFSET %d
     					", $limit, $offset ) );
-		} else if( $request->get_param( 'digits_phone_no' )){
-			$query = "
-						FROM $wpdb->usermeta
-						WHERE meta_key = 'digits_phone_no'
-						ORDER BY umeta_id";
-			$data  = $wpdb->get_results( $wpdb->prepare(
-				"
-						SELECT user_id as id, meta_value as digits_phone_no
-						" .
-				$query .
-				"
-						LIMIT %d
-						OFFSET %d
-						", $limit, $offset ) );
 		} else {
 			$query = "
 						FROM $wpdb->users
