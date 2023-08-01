@@ -16,7 +16,7 @@
  * Plugin Name:       Novin Commerce
  * Plugin URI:        http://novinhozor.ir/novin-commerce/
  * Description:       Connect novin accounting app to woocommerce.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Author:            Seyed Mobin Avazolhayat
  * Author URI:        http://mobindev.ir/
  * License:           GPL-2.0+

@@ -111,6 +111,28 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 			)
 		);
 
+		//get customer id by digitNumber
+		// call methode getDigitNumber and pass digits_phone_no as arg
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/customer-by-digitNumber',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'getDigitNumber' ),
+					'permission_callback' => array( $this, 'checkPermission' ),
+					'args'                => [
+						'digits_phone_no' => array(
+							'description'       => __( 'Get customer id with this digitNumber.' ),
+							'type'              => 'string',
+							'validate_callback' => 'rest_validate_request_arg',
+							'required'          => true
+						)
+					],
+				),
+			)
+		);
+
 		//get customer id by username
 		register_rest_route(
 			$this->namespace,
@@ -492,8 +514,50 @@ class Novin_REST_Controller extends \WC_REST_CRUD_Controller {
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
+
+	 // در این متد دو مقدار نام جدول متا که
+	 //usermeta
+	 // هست و پارامتر ارسالی از سمت
+	 // url
+	 // دریافت شده و سپس کویری لازم برای دریافت آیدی از متا  نوشته میشود
+	public function getMetaPhoneNumber( $request, $table ) {
+		global $wpdb;
+
+		$digits_phone_no = $request->get_param( 'digits_phone_no' );
+
+		$id = $wpdb->get_col( $wpdb->prepare( "
+		SELECT user_id
+		FROM {$wpdb->$table}
+		WHERE meta_key = 'digits_phone_no' AND meta_value = %s
+		", $digits_phone_no) );
+
+		if ( empty( $id ) ) {
+			return new \WP_Error( "digits_phone_no_not_found", 'digits_phone_no_not_found', 'novin-commerce' ), array( 'status' => 404 ) );
+		}
+
+		return new \WP_REST_Response( $id );
+
+	}
+
+	/**
+	 * @param $request \WP_REST_Request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
 	public function getCustomerGuid( $request ) {
 		return $this->getMetaGuid( $request, 'usermeta' );
+	}
+
+
+	/**
+	 * @param $request \WP_REST_Request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+
+	 //این متد از طریق /customer-by-digitNumber صدا زده میشود 
+	public function getDigitNumber( $request ) {
+		return $this->getMetaPhoneNumber( $request, 'usermeta' );
 	}
 
 
